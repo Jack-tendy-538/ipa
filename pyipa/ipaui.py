@@ -2,7 +2,7 @@ import win32com.client
 import subprocess
 from . import avtk
 
-# TODO£º »ñÈ¡Ç°Ì¨´°¿Ú½ø³Ì¾ä±ú
+# TODOï¼š è·å–å‰å°çª—å£è¿›ç¨‹å¥æŸ„
 def get_foreground_window_process_handle():
     shell = win32com.client.Dispatch("WScript.Shell")
     shell.AppActivate(win32com.client.Dispatch("WScript.Shell").AppActivate)
@@ -11,23 +11,23 @@ def get_foreground_window_process_handle():
     process_handle = win32com.client.Dispatch("kernel32").OpenProcess(0x1F0FFF, False, pid)
     return process_handle
 
-# TODO£º Èç¹û²»ÊÇPowerPoint½ø³Ì»òÕß²»ÊÇ·ÅÓ³×´Ì¬£¬ÍË³ö³ÌĞò
+# TODOï¼š å¦‚æœä¸æ˜¯PowerPointè¿›ç¨‹æˆ–è€…ä¸æ˜¯æ”¾æ˜ çŠ¶æ€ï¼Œé€€å‡ºç¨‹åº
 def ensure_powerpoint_process():
     process_handle = get_foreground_window_process_handle()
     process_name = avtk.get_process_name(process_handle)
     if process_name.lower() != "powerpnt.exe":
-        raise Exception("µ±Ç°Ç°Ì¨´°¿Ú²»ÊÇPowerPoint½ø³Ì¡£")
+        raise Exception("å½“å‰å‰å°çª—å£ä¸æ˜¯PowerPointè¿›ç¨‹ã€‚")
 
     if not PPTObj.SlideShowWindows:
-        raise Exception("µ±Ç°PowerPointÃ»ÓĞ´¦ÓÚ·ÅÓ³×´Ì¬¡£")
+        raise Exception("å½“å‰PowerPointæ²¡æœ‰å¤„äºæ”¾æ˜ çŠ¶æ€ã€‚")
 
-# TODO£º »ñÈ¡PowerPointÓ¦ÓÃ³ÌĞò¶ÔÏó
+# TODOï¼š è·å–PowerPointåº”ç”¨ç¨‹åºå¯¹è±¡
 def get_powerpoint_app():
     ensure_powerpoint_process()
     powerpoint_app = win32com.client.Dispatch("PowerPoint.Application")
     return powerpoint_app
 
-# TODO£º ÓÃavtk´´½¨´°¿ÚÒÔÓëÓÃ»§½»»¥
+# TODOï¼š ç”¨avtkåˆ›å»ºçª—å£ä»¥ä¸ç”¨æˆ·äº¤äº’
 def create_interactive_window(title, width, height):
     app = avtk.App()
     window = app.create_window(title, width, height)
@@ -46,18 +46,18 @@ def checkIfPPTLockedOrReadOnly():
         return True
 
 def Unlock():
-    # ³¢ÊÔ½â³ıPowerPointµÄÖ»¶Á×´Ì¬
+    # å°è¯•è§£é™¤PowerPointçš„åªè¯»çŠ¶æ€
     try:
         presentation = PPTObj.ActivePresentation
         if presentation.ReadOnly:
             presentation.ReadOnly = False
     except Exception as e:
-        print(f"ÎŞ·¨½â³ıÖ»¶Á×´Ì¬: {e}")
-    # ³¢ÊÔ¹Ø±Õ±£»¤ÊÓÍ¼
+        print(f"æ— æ³•è§£é™¤åªè¯»çŠ¶æ€: {e}")
+    # å°è¯•å…³é—­ä¿æŠ¤è§†å›¾
     try:
         subprocess.run(["powershell", "-Command", "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Office\\16.0\\PowerPoint\\Security' -Name 'EnableProtectedView' -Value 0"], check=True)
     except Exception as e:
-        print(f"ÎŞ·¨¹Ø±Õ±£»¤ÊÓÍ¼: {e}")
+        print(f"æ— æ³•å…³é—­ä¿æŠ¤è§†å›¾: {e}")
 
 def SendKeysToPPT(keys):
     ensure_powerpoint_process()
@@ -75,7 +75,7 @@ def SendEscToPPT():
     SendKeysToPPT("{ESC}")
 
 def ToogleArrowStatusToPPT(status):
-    # ½«¼ıÍ·×´Ì¬ÇĞ»»ÎªÖ¸¶¨×´Ì¬
+    # å°†ç®­å¤´çŠ¶æ€åˆ‡æ¢ä¸ºæŒ‡å®šçŠ¶æ€
     # status: arrow / pen / eraser
     PPTObj.SlideShowWindows(1).View.PointerType = {
         "arrow": 1,
@@ -92,34 +92,34 @@ def GetCurrentSlideIndex():
 def SendViewAllSlidesToPPT():
     SendKeysToPPT("G")
 
-# avtk´°¿ÚÊ¾Àı
+# avtkçª—å£ç¤ºä¾‹
 def makeLockedAvtkWindow():
-    app, window = create_interactive_window("PPTÒÑËø¶¨", 400, 200)
-    label = app.create_label(window, "¼ì²âµ½µ±Ç°PPT´¦ÓÚÖ»¶Á»ò±£»¤ÊÓÍ¼×´Ì¬£¬Çë½â³ıËø¶¨ºó¼ÌĞø²Ù×÷¡£", 20, 50)
-    button = app.create_button(window, "ÎÒÒÑ½â³ıËø¶¨", 150, 120)
+    app, window = create_interactive_window("PPTå·²é”å®š", 400, 200)
+    label = app.create_label(window, "æ£€æµ‹åˆ°å½“å‰PPTå¤„äºåªè¯»æˆ–ä¿æŠ¤è§†å›¾çŠ¶æ€ï¼Œè¯·è§£é™¤é”å®šåç»§ç»­æ“ä½œã€‚", 20, 50)
+    button = app.create_button(window, "æˆ‘å·²è§£é™¤é”å®š", 150, 120)
     def on_button_click():
         if not checkIfPPTLockedOrReadOnly():
             app.close_window(window)
         else:
-            app.update_label(label, "PPTÈÔÈ»´¦ÓÚÖ»¶Á»ò±£»¤ÊÓÍ¼×´Ì¬£¬Çë¼ÌĞø½â³ıËø¶¨¡£")
+            app.update_label(label, "PPTä»ç„¶å¤„äºåªè¯»æˆ–ä¿æŠ¤è§†å›¾çŠ¶æ€ï¼Œè¯·ç»§ç»­è§£é™¤é”å®šã€‚")
     app.set_button_callback(button, on_button_click)
     app.run()
 
 def makeMainWindow():
-    # ÏÔÊ¾ppt¿ØÖÆÃæ°å
-    app, window = create_interactive_window("PPT¿ØÖÆÃæ°å", 400, 300)
-    # ËùÓĞÔªËØÔÚÍ¬Ò»ÅÅË®Æ½¾ÓÖĞ
-    btn_page_down = app.create_button(window, "ÏÂÒ»Ò³", 50, 50)
-    btn_page_up = app.create_button(window, "ÉÏÒ»Ò³", 150, 50)
-    btn_esc = app.create_button(window, "ÍË³ö·ÅÓ³", 250, 50)
-    btn_view_all = app.create_button(window, "²é¿´ËùÓĞ»ÃµÆÆ¬", 50, 100)
-    btn_arrow = app.create_button(window, "ÇĞ»»µ½¼ıÍ·", 150, 100)
-    btn_pen = app.create_button(window, "ÇĞ»»µ½»­±Ê", 250, 100)
-    btn_eraser = app.create_button(window, "ÇĞ»»µ½ÏğÆ¤²Á", 50, 150)
-    btn_clear_ink = app.create_button(window, "Çå³ıËùÓĞÄ«¼£", 150, 150)
-    label_slide_index = app.create_label(window, f"µ±Ç°»ÃµÆÆ¬Ë÷Òı: {GetCurrentSlideIndex()}", 50, 200)
+    # æ˜¾ç¤ºpptæ§åˆ¶é¢æ¿
+    app, window = create_interactive_window("PPTæ§åˆ¶é¢æ¿", 400, 300)
+    # æ‰€æœ‰å…ƒç´ åœ¨åŒä¸€æ’æ°´å¹³å±…ä¸­
+    btn_page_down = app.create_button(window, "ä¸‹ä¸€é¡µ", 50, 50)
+    btn_page_up = app.create_button(window, "ä¸Šä¸€é¡µ", 150, 50)
+    btn_esc = app.create_button(window, "é€€å‡ºæ”¾æ˜ ", 250, 50)
+    btn_view_all = app.create_button(window, "æŸ¥çœ‹æ‰€æœ‰å¹»ç¯ç‰‡", 50, 100)
+    btn_arrow = app.create_button(window, "åˆ‡æ¢åˆ°ç®­å¤´", 150, 100)
+    btn_pen = app.create_button(window, "åˆ‡æ¢åˆ°ç”»ç¬”", 250, 100)
+    btn_eraser = app.create_button(window, "åˆ‡æ¢åˆ°æ©¡çš®æ“¦", 50, 150)
+    btn_clear_ink = app.create_button(window, "æ¸…é™¤æ‰€æœ‰å¢¨è¿¹", 150, 150)
+    label_slide_index = app.create_label(window, f"å½“å‰å¹»ç¯ç‰‡ç´¢å¼•: {GetCurrentSlideIndex()}", 50, 200)
     def update_slide_index_label():
-        app.update_label(label_slide_index, f"µ±Ç°»ÃµÆÆ¬Ë÷Òı: {GetCurrentSlideIndex()}")
+        app.update_label(label_slide_index, f"å½“å‰å¹»ç¯ç‰‡ç´¢å¼•: {GetCurrentSlideIndex()}")
     app.set_button_callback(btn_page_down, lambda: [SendPageDownToPPT(), update_slide_index_label()])
     app.set_button_callback(btn_page_up, lambda: [SendPageUpToPPT(), update_slide_index_label()])
     app.set_button_callback(btn_esc, SendEscToPPT)
